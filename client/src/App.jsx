@@ -1,11 +1,12 @@
-import { Button } from "./components/ui/button";
+import Navbar from "./components/Navbar";
+
 import Login from "./pages/Login";
 
 function App() {
   return (
     <>
-      <Button> Lefts build ems</Button>
-      <Login/>
+      <Navbar />
+      <Login />
     </>
   );
 }
