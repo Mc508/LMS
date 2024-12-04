@@ -21,9 +21,10 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Darkmode } from "../Darkmode";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const user = false;
+  const user = true;
   return (
     <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
       {/* Desktop */}
@@ -49,8 +50,12 @@ const Navbar = () => {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>My Learning</DropdownMenuItem>
-                  <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="my-learning">My Learning</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="profile">Edit Profile</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Logout</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
@@ -59,7 +64,9 @@ const Navbar = () => {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="outline">Login</Button>
+              <Button variant="outline">
+                <Link to="login">Login</Link>
+              </Button>
               <Button>Signup</Button>
             </div>
           )}
