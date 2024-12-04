@@ -17,11 +17,12 @@ import {
 } from "../features/api/authApi";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [signup, setSignup] = useState({ name: "", email: "", password: "" });
   const [login, setLogin] = useState({ email: "", password: "" });
-
+  const navigate = useNavigate();
   const [
     registerUser,
     {
@@ -65,6 +66,7 @@ const Login = () => {
     }
     if (loginIsSuccess && loginData) {
       toast.success(loginData.message || "Login Successfully");
+      navigate("/");
     }
     if (loginError) {
       toast.error(loginError.message || "Login failed");
