@@ -32,7 +32,32 @@ export const authApi = createApi({
         }
       },
     }),
+    logoutUser: builder.mutation({
+      query: () => ({
+        url: "logout",
+        method: "GET",
+      }),
+    }),
+    loadUser: builder.query({
+      query: () => ({
+        url: "profile",
+        method: "GET",
+      }),
+    }),
+    updateUser: builder.mutation({
+      query: (inputData) => ({
+        url: "profile/update",
+        method: "PUT",
+        body: inputData,
+      }),
+    }),
   }),
 });
 
-export const { useRegisterUserMutation, useLoginUserMutation } = authApi;
+export const {
+  useLogoutUserMutation,
+  useLoadUserQuery,
+  useRegisterUserMutation,
+  useLoginUserMutation,
+  useUpdateUserMutation,
+} = authApi;
