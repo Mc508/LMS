@@ -52,7 +52,9 @@ const Profile = () => {
     formData.append("profilePhoto", profilePhoto);
     await updateUser(formData);
   };
-
+  useEffect(() => {
+    refetch();
+  });
   useEffect(() => {
     if (isSuccess) {
       refetch();
