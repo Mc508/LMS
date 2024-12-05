@@ -64,7 +64,8 @@ const Profile = () => {
   }, [isError, updateUserData, isSuccess]);
 
   if (isLoading) return <h1>Loadinig...</h1>;
-  const { user } = data && data.user;
+  const user = data && data.user;
+  // console.log(user);
 
   return (
     <div className="max-w-4xl mx-auto px-4 my-24">
@@ -73,7 +74,7 @@ const Profile = () => {
         <div className="flex flex-col items-center">
           <Avatar className="h-24 w-24 md:h-32 md:w-32 mb-4">
             <AvatarImage
-              src={user.photoUrl || "https://github.com/shadcn.png"}
+              src={user?.photoUrl || "https://github.com/shadcn.png"}
               alt="@shadcn"
             />
             <AvatarFallback>CN</AvatarFallback>
@@ -84,7 +85,7 @@ const Profile = () => {
             <h1 className="font-semibold text-gray-900 dark:text-gray-300 text-xl">
               Name:
               <span className="font-normal text-gray-900 dark:text-gray-300 ml-2">
-                {user.name}
+                {user?.name}
               </span>
             </h1>
           </div>
@@ -92,7 +93,7 @@ const Profile = () => {
             <h1 className="font-semibold text-gray-900 dark:text-gray-300 text-xl">
               Email:
               <span className="font-normal text-gray-900 dark:text-gray-300 ml-2">
-                {user.email}
+                {user?.email}
               </span>
             </h1>
           </div>
@@ -100,7 +101,7 @@ const Profile = () => {
             <h1 className="font-semibold text-gray-900 dark:text-gray-300 text-xl">
               role:
               <span className="font-normal text-gray-900 dark:text-gray-300 ml-2">
-                {user.role.toUpperCase()}
+                {user?.role.toUpperCase()}
               </span>
             </h1>
           </div>
@@ -158,10 +159,10 @@ const Profile = () => {
       <div className="">
         <h1 className="font-medium text-lg">Courses you&apos;re enrolled in</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-5">
-          {user.enrolledCourses.length === 0 ? (
+          {user?.enrolledCourses.length === 0 ? (
             <h1>You havent enrolled in any course</h1>
           ) : (
-            user.enrolledCourses.map((course) => (
+            user?.enrolledCourses.map((course) => (
               <Course key={course._id} course={course} />
             ))
           )}
