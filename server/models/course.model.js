@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const courseSchema = new Schema(
   {
     courseTitle: {
+      type: String,
       required: true,
     },
     subTitle: {
