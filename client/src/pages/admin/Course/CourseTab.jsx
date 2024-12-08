@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RichTextEditor from "../../../components/RichTextEditor";
 import { Button } from "../../../components/ui/button";
 import {
@@ -20,20 +20,25 @@ import {
   SelectValue,
 } from "../../../components/ui/select";
 import { Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEditCourseMutation } from "../../../features/api/courseApi";
+import { toast } from "sonner";
 
 const CourseTab = () => {
   const navigate = useNavigate();
-  const isLoading = true;
+  const [editCourse, { data, isLoading, isSuccess, error }] =
+    useEditCourseMutation();
   const [input, setInput] = useState({
-    title: "",
+    courseTitle: "",
     subTitle: "",
     description: "",
     category: "",
-    level: "",
-    price: "",
-    thumbnail: "",
+    courseLevel: "",
+    coursePrice: "",
+    courseThumbnail: "",
   });
+  const params = useParams();
+  const courseId = params.courseId;
   const [previewThumbenail, setPreviewThumbnail] = useState();
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
@@ -45,7 +50,7 @@ const CourseTab = () => {
   };
 
   const seleceLevel = (value) => {
-    setInput({ ...input, level: value });
+    setInput({ ...input, courseLevel: value });
   };
 
   const selectThumnail = (e) => {
@@ -58,8 +63,26 @@ const CourseTab = () => {
     }
   };
 
-  const isPublished = true;
-
+  const isPublished = false;
+  const updateCourseHandler = async () => {
+    const formData = new FormData();
+    formData.append("courseTitle", input.courseTitle);
+    formData.append("subTitle", input.subTitle);
+    formData.append("category", input.category);
+    formData.append("description", input.description);
+    formData.append("coursePrice", input.coursePrice);
+    formData.append("courseLevel", input.courseLevel);
+    formData.append("courseThumbnail", input.courseThumbnail);
+    await editCourse({ formData, courseId });
+  };
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || "Course updated");
+    }
+    if (error) {
+      toast.error(error.data.message || "Failed to update course");
+    }
+  }, [isSuccess, error]);
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
@@ -81,8 +104,8 @@ const CourseTab = () => {
             <Input
               type="text"
               placeholder="eg. Fullstack developer"
-              name="title"
-              value={input.title}
+              name="courseTitle"
+              value={input.courseTitle}
               onChange={changeEventHandler}
             />
           </div>
@@ -135,7 +158,7 @@ const CourseTab = () => {
               <Label>Level</Label>
               <Select onValueChange={seleceLevel}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a level" />
+                  <SelectValue placeholder="Select a courseLevel" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -152,8 +175,8 @@ const CourseTab = () => {
               <Input
                 type="text"
                 placeholder="eg.INR 5000"
-                name="price"
-                value={input.price}
+                name="coursePrice"
+                value={input.coursePrice}
                 onChange={changeEventHandler}
               />
             </div>
@@ -178,7 +201,7 @@ const CourseTab = () => {
             <Button onClick={() => navigate("/admin/course")} variant="outline">
               Cancle
             </Button>
-            <Button disabled={isLoading}>
+            <Button onClick={updateCourseHandler} disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

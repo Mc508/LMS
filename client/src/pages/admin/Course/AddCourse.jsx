@@ -22,17 +22,16 @@ const AddCourse = () => {
 
   const navigate = useNavigate();
 
-  const [creatCourse, { data, isLoading, error, isSuccess }] =
+  const [createCourse, { data, isLoading, error, isSuccess }] =
     useCreateCourseMutation();
 
   const getSelectedCategory = async (value) => {
-    refetch();
     setCategory(value);
   };
 
   const createCourseHandler = async () => {
     console.log(courseTitle, category);
-    await creatCourse({ courseTitle, category });
+    await createCourse({ courseTitle, category });
   };
 
   useEffect(() => {
