@@ -20,9 +20,13 @@ import {
   SelectValue,
 } from "../../../components/ui/select";
 import { Loader2 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEditCourseMutation } from "../../../features/api/courseApi";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  useEditCourseMutation,
+  useGetCourseByIdQuery,
+} from "../../../features/api/courseApi";
 import { toast } from "sonner";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 const CourseTab = () => {
   const navigate = useNavigate();
@@ -45,6 +49,22 @@ const CourseTab = () => {
     setInput({ ...input, [name]: value });
   };
 
+  const { data: courseByIdData, isLoading: courseByIdLoading } =
+    useGetCourseByIdQuery(courseId);
+  const course = courseByIdData?.course;
+  useEffect(() => {
+    if (course) {
+      setInput({
+        courseTitle: course.courseTitle,
+        subTitle: course.subTitle,
+        description: course.description,
+        category: course.category,
+        courseLevel: course.courseLevel,
+        coursePrice: course.coursePrice,
+      });
+      setPreviewThumbnail(course.courseThumbnail);
+    }
+  }, [course]);
   const seleceCategory = (value) => {
     setInput({ ...input, category: value });
   };
@@ -74,6 +94,7 @@ const CourseTab = () => {
     formData.append("courseLevel", input.courseLevel);
     formData.append("courseThumbnail", input.courseThumbnail);
     await editCourse({ formData, courseId });
+    navigate("/admin/course");
   };
   useEffect(() => {
     if (isSuccess) {
@@ -83,6 +104,10 @@ const CourseTab = () => {
       toast.error(error.data.message || "Failed to update course");
     }
   }, [isSuccess, error]);
+
+  if (courseByIdLoading) {
+    return <LoadingSpinner />;
+  }
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
@@ -126,7 +151,7 @@ const CourseTab = () => {
           <div className="flex items-center gap-5">
             <div>
               <Label>Category</Label>
-              <Select onValueChange={seleceCategory}>
+              <Select onValueChange={seleceCategory} value={input.category}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
@@ -156,7 +181,7 @@ const CourseTab = () => {
 
             <div>
               <Label>Level</Label>
-              <Select onValueChange={seleceLevel}>
+              <Select onValueChange={seleceLevel} value={input.courseLevel}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a courseLevel" />
                 </SelectTrigger>

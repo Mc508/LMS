@@ -11,6 +11,7 @@ import CourseTable from "./pages/admin/Course/CourseTable";
 import Sidebar from "./pages/Sidebar";
 import AddCourse from "./pages/admin/Course/AddCourse";
 import EditCourse from "./pages/admin/Course/EditCourse";
+import CreateLecture from "./pages/admin/lecture/CreateLecture";
 
 const appRouter = createBrowserRouter([
   {
@@ -60,6 +61,10 @@ const appRouter = createBrowserRouter([
           {
             path: "course/:courseId",
             element: <EditCourse />,
+          },
+          {
+            path: "course/:courseId/lecture",
+            element: <CreateLecture />,
           },
         ],
       },
