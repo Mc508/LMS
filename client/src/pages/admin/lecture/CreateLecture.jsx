@@ -25,6 +25,7 @@ const CreateLecture = () => {
     data: lectureData,
     isLoading: lectureLoading,
     isError: lectureError,
+    refetch,
   } = useGetCourseLectureQuery(courseId);
 
   const createLectureHandler = async () => {
@@ -34,6 +35,7 @@ const CreateLecture = () => {
   useEffect(() => {
     if (isSuccess) {
       toast.success(data.message || "Lecture created");
+      refetch();
       navigate("/admin/course");
     }
     if (error) {
@@ -61,7 +63,7 @@ const CreateLecture = () => {
         />
       </div>
 
-      <div className="space-y-4">
+      <div className="mt-4">
         <div className="flex item-center gap-2">
           <Button
             variant="outline"
@@ -81,7 +83,7 @@ const CreateLecture = () => {
             )}
           </Button>
         </div>
-        <div className="mt-10">
+        <div className="mt-4">
           {lectureLoading ? (
             <LoadingSpinner />
           ) : lectureError ? (
@@ -89,14 +91,14 @@ const CreateLecture = () => {
           ) : lectureData.lectures.length === 0 ? (
             <p>No lecture availabel</p>
           ) : (
-            lectureData.lectures.map((lecture, index) => {
+            lectureData.lectures.map((lecture, index) => (
               <Lecture
                 key={lecture._id}
                 lecture={lecture}
-                index={index}
                 courseId={courseId}
-              />;
-            })
+                index={index}
+              />
+            ))
           )}
         </div>
       </div>
