@@ -171,3 +171,14 @@ export const getCourseLecture = async (req, res) => {
     return res.status(500).json({ message: "failed to get lecture" });
   }
 };
+
+export const editLectue = async (req, res) => {
+  try {
+    const { lectureTitle, isPreviewFree } = req.body;
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "failed to edit lecture",
+    });
+  }
+};

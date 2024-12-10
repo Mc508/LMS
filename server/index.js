@@ -1,4 +1,5 @@
 import courseRoute from "./routes/course.route.js";
+import mediaRoute from "./routes/media.route.js";
 import express from "express";
 import connectDB from "./database/db.js";
 import userRoute from "./routes/user.route.js";
@@ -19,7 +20,7 @@ app.use(
     credentials: true,
   })
 );
-
+app.use("/api/v1/media", mediaRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
 
