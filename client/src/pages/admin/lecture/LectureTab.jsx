@@ -12,6 +12,7 @@ import { Label } from "../../../components/ui/label";
 import { Switch } from "../../../components/ui/switch";
 import axios from "axios";
 import { toast } from "sonner";
+import { Progress } from "../../../components/ui/progress";
 
 const MEDIA_API = "http://localhost:8000/api/v1/media";
 
@@ -25,17 +26,20 @@ const LectureTab = () => {
 
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
+    console.log(file);
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
       setMediaProgress(true);
       try {
-        const res = await axios.post(`${MEDIA_API}/upload-media`, formData, {
+        const res = await axios.post(`${MEDIA_API}/upload-video`, formData, {
           onUploadProgress: ({ loaded, total }) => {
             setUploadProgress(Math.round((loaded * 100) / total));
           },
         });
+        console.log(res);
         if (res.data.success) {
+          console.log(res);
           setUploadVideoInfo({
             videoUrl: res.data.data.url,
             publicId: res.data.data.publicId,
@@ -76,20 +80,23 @@ const LectureTab = () => {
           <Input
             type="file"
             accept="video/*"
+            onChange={fileChangeHandler}
             className="w-fit"
+            required
             placeholder="eg. introduction to javascript"
           />
         </div>
 
         <div className="flex items-center space-x-2 my-5">
           <Switch id="airplane-mode" />
-          <Label
-            htmlFor="airplane
-          -mode"
-          >
-            Is This video for free
-          </Label>
+          <Label htmlFor="airplane-mode">Is This video for free</Label>
         </div>
+        {mediaProgress && (
+          <div className="my-4">
+            <Progress value={uploadProgress} />
+            <p>{uploadProgress}% uploaded</p>
+          </div>
+        )}
         <div className="mt-4">
           <Button>Update Lecture</Button>
         </div>
