@@ -3,7 +3,11 @@ import { Lecture } from "../models/lecture.model.js";
 import { apiError } from "../utils/apiError.js";
 import { apiResponse } from "../utils/apiResponse.js";
 
-import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
+import {
+  deleteMediaFromCloudinary,
+  deleteVideoFromCloudinary,
+  uploadMedia,
+} from "../utils/cloudinary.js";
 
 export const createCourse = async (req, res) => {
   try {
@@ -183,10 +187,10 @@ export const editLecture = async (req, res) => {
       });
     }
     if (lectureTitle) lecture.lectureTitle = lectureTitle;
-    if (videoInfo.videoUrl) {
+    if (videoInfo?.videoUrl) {
       lecture.videoUrl = videoInfo.videoUrl;
     }
-    if (videoInfo.publicId) lecture.publicId = videoInfo.publicId;
+    if (videoInfo?.publicId) lecture.publicId = videoInfo.publicId;
     if (isPreviewFree) lecture.isPreviewFree = isPreviewFree;
 
     await lecture.save();
@@ -207,10 +211,11 @@ export const editLecture = async (req, res) => {
   }
 };
 
-export const removeLecture = async (re, res) => {
+export const removeLecture = async (req, res) => {
   try {
     const { lectureId } = req.params;
     const lecture = await Lecture.findByIdAndDelete(lectureId);
+
     if (!lecture) {
       return res.status(404).json({
         message: "Lecture not found",
@@ -220,19 +225,21 @@ export const removeLecture = async (re, res) => {
     // delete lectures from cloudinarty
 
     if (lecture.publicId) {
-      await deleteVideoFromCloudinary(lectureId);
+      await deleteVideoFromCloudinary(lecture.publicId);
     }
 
     // remove the lecture reference from the associeted course;
 
     await Course.updateOne(
       { lectures: lectureId },
-      { $pull: { lectures: lecture } }
+      { $pull: { lectures: lectureId } }
     );
+
     return res.status(200).json({
       message: "Lecture removed",
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       message: "failed to remove lecture",
     });

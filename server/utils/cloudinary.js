@@ -1,8 +1,8 @@
-import { v2 as cloudnary } from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
 dotenv.config({});
 
-cloudnary.config({
+cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
@@ -10,7 +10,7 @@ cloudnary.config({
 
 export const uploadMedia = async (file) => {
   try {
-    const uploadResponse = await cloudnary.uploader.upload(file, {
+    const uploadResponse = await cloudinary.uploader.upload(file, {
       resource_type: "auto",
     });
     return uploadResponse;
@@ -21,15 +21,15 @@ export const uploadMedia = async (file) => {
 
 export const deleteMediaFromCloudinary = async (publicId) => {
   try {
-    await cloudnary.uploader.destroy(publicId);
+    await cloudinary.uploader.destroy(publicId);
   } catch (error) {
     console.log(error);
   }
 };
 
-export const delteVideoFromCloudinary = async (publicId) => {
+export const deleteVideoFromCloudinary = async (publicId) => {
   try {
-    await cloudnary.uplpoader.destroy(publicId, { resource_type: "video" });
+    await cloudinary.uploader.destroy(publicId, { resource_type: "video" });
   } catch (error) {
     console.log(error);
   }
