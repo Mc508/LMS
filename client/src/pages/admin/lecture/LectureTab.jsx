@@ -48,7 +48,7 @@ const LectureTab = () => {
 
   const { courseId, lectureId } = params;
 
-  const { data: lectureData } = useGetLectureByIdQuery();
+  const { data: lectureData } = useGetLectureByIdQuery(lectureId);
 
   const lecture = lectureData?.lecture;
 
@@ -180,11 +180,7 @@ const LectureTab = () => {
         </div>
 
         <div className="flex items-center space-x-2 my-5">
-          <Switch
-            id="airplane-mode"
-            checked={isFree}
-            onCheckedChange={setIsFree}
-          />
+          <Switch checked={isFree} onCheckedChange={setIsFree} />
           <Label htmlFor="airplane-mode">Is This video for free</Label>
         </div>
         {mediaProgress && (

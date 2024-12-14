@@ -24,6 +24,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   useEditCourseMutation,
   useGetCourseByIdQuery,
+  usePublishCourseMutation,
 } from "../../../features/api/courseApi";
 import { toast } from "sonner";
 import LoadingSpinner from "../../../components/LoadingSpinner";
@@ -43,15 +44,24 @@ const CourseTab = () => {
   });
   const params = useParams();
   const courseId = params.courseId;
+
   const [previewThumbenail, setPreviewThumbnail] = useState();
+
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
     setInput({ ...input, [name]: value });
   };
 
-  const { data: courseByIdData, isLoading: courseByIdLoading } =
-    useGetCourseByIdQuery(courseId);
+  const {
+    data: courseByIdData,
+    isLoading: courseByIdLoading,
+    refetch,
+  } = useGetCourseByIdQuery(courseId);
+
+  const [publishCourse] = usePublishCourseMutation();
+
   const course = courseByIdData?.course;
+
   useEffect(() => {
     if (course) {
       setInput({
@@ -65,6 +75,7 @@ const CourseTab = () => {
       setPreviewThumbnail(course.courseThumbnail);
     }
   }, [course]);
+
   const seleceCategory = (value) => {
     setInput({ ...input, category: value });
   };
@@ -83,7 +94,8 @@ const CourseTab = () => {
     }
   };
 
-  const isPublished = false;
+  // const isPublished = false;
+
   const updateCourseHandler = async () => {
     const formData = new FormData();
     formData.append("courseTitle", input.courseTitle);
@@ -96,6 +108,7 @@ const CourseTab = () => {
     await editCourse({ formData, courseId });
     navigate("/admin/course");
   };
+
   useEffect(() => {
     if (isSuccess) {
       toast.success(data.message || "Course updated");
@@ -105,9 +118,26 @@ const CourseTab = () => {
     }
   }, [isSuccess, error]);
 
+  const publishStatusHandler = async (action) => {
+    try {
+      const response = await publishCourse({
+        courseId,
+        query: action,
+      });
+      if (response.data) {
+        refetch();
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to publish or unpublish course");
+    }
+  };
+
   if (courseByIdLoading) {
     return <LoadingSpinner />;
   }
+
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
@@ -116,8 +146,15 @@ const CourseTab = () => {
           <CardDescription>Edit your course</CardDescription>
         </div>
         <div className="space-x-2">
-          <Button variant="outline">
-            {isPublished ? "Unpublished" : "Published"}
+          <Button
+            variant="outline"
+            onClick={() =>
+              publishStatusHandler(
+                courseByIdData?.course.isPublished ? "false" : "true"
+              )
+            }
+          >
+            {courseByIdData?.course.isPublished ? "Unpublished" : "Published"}
           </Button>
           <Button>Remove Course</Button>
         </div>
