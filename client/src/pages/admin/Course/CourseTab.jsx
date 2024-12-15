@@ -148,6 +148,7 @@ const CourseTab = () => {
         <div className="space-x-2">
           <Button
             variant="outline"
+            disabled={courseByIdData.course.lectures.length < 1}
             onClick={() =>
               publishStatusHandler(
                 courseByIdData?.course.isPublished ? "false" : "true"
