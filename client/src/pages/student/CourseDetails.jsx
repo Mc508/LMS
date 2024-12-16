@@ -9,6 +9,7 @@ import {
 } from "../../components/ui/card";
 import { Separator } from "../../components/ui/separator";
 import { Button } from "../../components/ui/button";
+import BuyCourseButton from "../../components/BuyCourseButton";
 
 const CourseDetails = () => {
   const purchasedCourse = true;
@@ -66,11 +67,11 @@ const CourseDetails = () => {
               </h1>
             </CardContent>
 
-            <CardFooter>
+            <CardFooter className="flex justify-center p-4">
               {purchasedCourse ? (
-                <Button>Continue Course</Button>
+                <Button className="w-full">Continue Course</Button>
               ) : (
-                <Button>Purchase Course</Button>
+                <BuyCourseButton />
               )}
             </CardFooter>
           </Card>
