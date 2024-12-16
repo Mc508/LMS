@@ -303,7 +303,7 @@ export const getPublishedCourses = async (req, res) => {
       path: "creator",
       select: "name photoUrl",
     });
-    console.log(courses);
+    // console.log(courses);
     if (!courses) {
       return res.status(404).json({
         message: "No courses found",
