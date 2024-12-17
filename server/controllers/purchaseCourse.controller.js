@@ -39,8 +39,8 @@ export const createCheckoutSession = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.CLIENT_URL}/course-progress/${courseId}`,
-      cancel_url: `${process.env.CLIENT_URL}/course-details/${courseId}`,
+      success_url: `http://localhost:5173/course-progress/${courseId}`,
+      cancel_url: `http://localhost:5173/course-details/${courseId}`,
       metadata: {
         courseId: courseId,
         userId: userId,
@@ -49,16 +49,20 @@ export const createCheckoutSession = async (req, res) => {
         allowed_countries: ["IN"],
       },
     });
+
+    // console.log(session.url);
     if (!session.url) {
       return res.status(500).json({
         message: "Failed to create checkout session",
       });
     }
+
     newPurchase.paymentId = session.id;
     await newPurchase.save();
 
     return res.status(200).json({
-      sessionId: session.id,
+      success: true,
+      url: session.url,
     });
   } catch (error) {
     console.log(error);
@@ -77,7 +81,7 @@ export const stripeWebhook = async (req, res) => {
 
     const header = stripe.webhooks.generateTestHeaderString({
       payload: payloadString,
-      secret: secret,
+      secret,
     });
     event = stripe.webhooks.constructEvent(payloadString, header, secret);
   } catch (error) {
