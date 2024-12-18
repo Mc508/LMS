@@ -1,6 +1,9 @@
 import express from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
-import { createCheckoutSession } from "../controllers/purchaseCOurse.controller.js";
+import {
+  createCheckoutSession,
+  stripeWebhook,
+} from "../controllers/purchaseCOurse.controller.js";
 import Stripe from "stripe";
 
 const router = express.Router();
@@ -11,7 +14,7 @@ router
 
 router
   .route("/webhook")
-  .post(express.raw({ type: "application/json" }), Stripe);
+  .post(express.raw({ type: "application/json" }), stripeWebhook);
 
 router.route("/course/:courseId/detail-with-status").get();
 router.route("/").get();

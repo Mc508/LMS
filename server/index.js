@@ -25,6 +25,7 @@ app.use("/api/v1/media", mediaRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/purchase", purchaseRoute);
+
 app.get("/home", (_, res) => {
   res.status(200).json({
     success: true,

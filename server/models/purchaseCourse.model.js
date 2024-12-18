@@ -18,7 +18,7 @@ const purchaseCourseSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "success", "failed"],
+      enum: ["pending", "completed", "failed"],
       default: "pending",
     },
     paymentId: {

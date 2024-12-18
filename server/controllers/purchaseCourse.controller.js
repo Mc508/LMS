@@ -91,7 +91,7 @@ export const stripeWebhook = async (req, res) => {
 
   // Handle the event
 
-  if (event.type === "checkout.session.success") {
+  if (event.type === "checkout.session.completed") {
     console.log("checkout session success");
     try {
       const session = event.data.object;
@@ -108,7 +108,7 @@ export const stripeWebhook = async (req, res) => {
       if (session.amount_total) {
         purchase.amount = session.amount_total / 100;
       }
-      purchase.status = "success";
+      purchase.status = "completed";
       //make all lecture visible
       if (purchase.courseId && purchase.courseId.lectures.length > 0) {
         await Lecture.updateMany(
