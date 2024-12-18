@@ -91,7 +91,8 @@ export const stripeWebhook = async (req, res) => {
 
   // Handle the event
 
-  if (event.type === "checkout.session.completed") {
+  if (event.type === "checkout.session.success") {
+    console.log("checkout session success");
     try {
       const session = event.data.object;
       const purchase = await PurchaseCourse.findOne({
@@ -121,7 +122,7 @@ export const stripeWebhook = async (req, res) => {
 
       await User.findByIdAndUpdate(
         purchase.userId,
-        { $addToSet: { enrolledStudents: purchase.userId } },
+        { $addToSet: { enrolledCourses: purchase.courseId._id } },
         { new: true }
       );
 
