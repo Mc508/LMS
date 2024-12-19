@@ -16,7 +16,23 @@ export const purchaseApi = createApi({
         body: { courseId },
       }),
     }),
+    getCourseDetailPurchaseStatus: builder.query({
+      query: (courseId) => ({
+        url: `/course/${courseId}/detail-with-status`,
+        method: "GET",
+      }),
+    }),
+    getAllPurchasedCourses: builder.query({
+      query: () => ({
+        url: "/",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useCreateCheckoutSessionMutation } = purchaseApi;
+export const {
+  useCreateCheckoutSessionMutation,
+  useGetCourseDetailPurchaseStatusQuery,
+  useGetAllPurchasedCoursesQuery,
+} = purchaseApi;

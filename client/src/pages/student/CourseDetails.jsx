@@ -11,49 +11,69 @@ import { Separator } from "../../components/ui/separator";
 import { Button } from "../../components/ui/button";
 import BuyCourseButton from "../../components/BuyCourseButton";
 import { useParams } from "react-router-dom";
+import {
+  useGetAllPurchasedCoursesQuery,
+  useGetCourseDetailPurchaseStatusQuery,
+} from "../../features/api/purchaseApi";
 
 const CourseDetails = () => {
-  const purchasedCourse = false;
   const params = useParams();
   const courseId = params.courseId;
+  const { data, isLoading, isError } =
+    useGetCourseDetailPurchaseStatusQuery(courseId);
+  if (isLoading) {
+    return <h1>Loading</h1>;
+  }
+  if (isError) {
+    return <h1>Error</h1>;
+  }
+
+  const { course, purchased } = data;
+
+  console.log(purchased);
+
   return (
     <div className="mt-20 space-y-5">
       <div className="bg-[#2D2F31] text-white">
         <div className="max-w-7xl mx-auto py-8 md:px-8 flex flex-col gap-2">
-          <h1 className="font-bold text-2xl md:text-3xl">Course Title</h1>
-          <p className="text-base md:text-lg">Course Sub-title</p>
+          <h1 className="font-bold text-2xl md:text-3xl">
+            {course?.courseTitle}
+          </h1>
+          <p className="text-base md:text-lg">{course?.subTitle}</p>
           <p>
             Created By{" "}
-            <span className="text-[#C0C4FC] underline italic">Name</span>
+            <span className="text-[#C0C4FC] underline italic">
+              {course?.creator.name}
+            </span>
           </p>
           <div className="flex items-center gap-2 text-sm">
             <BadgeInfo size={16} />
-            <p>Last updated 15-12-2024</p>
+            <p>Last updated {course?.createdAt.split("T")[0]}</p>
           </div>
-          <p>Students enrolled : 10</p>
+          <p>Students enrolled : {course?.enrolledStudents.length}</p>
         </div>
       </div>
       <div className="max-w-7xl mx-auto my-5 px-4 md:px-8 flex flex-col lg:flex-row gap-10 justify-between ">
         <div className="w-full lg:w-1/2 space-y-5">
           <h1 className="font-bold text-xl md:text-2xl">Description</h1>
-          <p className="text-sm">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-            Repellendus culpa quaerat illum. Perspiciatis tempora ducimus quidem
-            vero. Consequatur, iste praesentium eos deserunt blanditiis atque
-            nobis sequi quam labore rerum esse.
-          </p>
+          <p
+            className="text-sm"
+            dangerouslySetInnerHTML={{ __html: course?.description }}
+          ></p>
           <Card>
             <CardHeader>
               <CardTitle>Course Content </CardTitle>
-              <CardDescription>4 Lectures</CardDescription>
+              <CardDescription>
+                {course?.lectures.length} lectures
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              {[1, 2, 3, 4].map((lecture, idx) => (
+              {course?.lectures.map((lecture, idx) => (
                 <div key={idx} className="flex items-center gap-2 text-sm">
                   <span>
                     {true ? <PlayCircle size={14} /> : <Lock size={14} />}
                   </span>
-                  <p>lecture title</p>
+                  <p>{lecture.lectureTitle}</p>
                 </div>
               ))}
             </CardContent>
@@ -71,7 +91,7 @@ const CourseDetails = () => {
             </CardContent>
 
             <CardFooter className="flex justify-center p-4">
-              {purchasedCourse ? (
+              {purchased ? (
                 <Button className="w-full">Continue Course</Button>
               ) : (
                 <BuyCourseButton courseId={courseId} />

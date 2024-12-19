@@ -2,6 +2,8 @@ import express from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 import {
   createCheckoutSession,
+  getAllPurchasedCourses,
+  getCourseDetailPurchaseStatus,
   stripeWebhook,
 } from "../controllers/purchaseCOurse.controller.js";
 import Stripe from "stripe";
@@ -16,6 +18,9 @@ router
   .route("/webhook")
   .post(express.raw({ type: "application/json" }), stripeWebhook);
 
-router.route("/course/:courseId/detail-with-status").get();
-router.route("/").get();
+router
+  .route("/course/:courseId/detail-with-status")
+  .get(getCourseDetailPurchaseStatus);
+router.route("/").get(getAllPurchasedCourses);
+
 export default router;
