@@ -10,15 +10,14 @@ import {
 import { Separator } from "../../components/ui/separator";
 import { Button } from "../../components/ui/button";
 import BuyCourseButton from "../../components/BuyCourseButton";
-import { useParams } from "react-router-dom";
-import {
-  useGetAllPurchasedCoursesQuery,
-  useGetCourseDetailPurchaseStatusQuery,
-} from "../../features/api/purchaseApi";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetCourseDetailPurchaseStatusQuery } from "../../features/api/purchaseApi";
+import ReactPlayer from "react-player";
 
 const CourseDetails = () => {
   const params = useParams();
   const courseId = params.courseId;
+  const navigate = useNavigate();
   const { data, isLoading, isError } =
     useGetCourseDetailPurchaseStatusQuery(courseId);
   if (isLoading) {
@@ -30,7 +29,11 @@ const CourseDetails = () => {
 
   const { course, purchased } = data;
 
-  console.log(purchased);
+  const handleContinueCourse = () => {
+    if (purchased) {
+      navigate(`/course-progress/${courseId}`);
+    }
+  };
 
   return (
     <div className="mt-20 space-y-5">
@@ -82,7 +85,14 @@ const CourseDetails = () => {
         <div className="w-full lg:w-1/3">
           <Card>
             <CardContent className="p-4 flex flex-col">
-              <div className="w-full aspect-video mb-4">Video</div>
+              <div className="w-full aspect-video mb-4">
+                <ReactPlayer
+                  width="100%"
+                  height="100%"
+                  url={course?.lectures[0].videoUrl}
+                  controls={true}
+                />
+              </div>
               <h1>Lecture title</h1>
               <Separator className="my-2" />
               <h1 className="text-lg md:text-xl font-semibold ">
@@ -92,7 +102,9 @@ const CourseDetails = () => {
 
             <CardFooter className="flex justify-center p-4">
               {purchased ? (
-                <Button className="w-full">Continue Course</Button>
+                <Button onClick={handleContinueCourse} className="w-full">
+                  Continue Course
+                </Button>
               ) : (
                 <BuyCourseButton courseId={courseId} />
               )}
