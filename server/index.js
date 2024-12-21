@@ -1,6 +1,7 @@
 import courseRoute from "./routes/course.route.js";
 import mediaRoute from "./routes/media.route.js";
 import purchaseRoute from "./routes/purchaseCourse.route.js";
+import courseProgressRoute from "./routes/courseProgress.route.js";
 import express from "express";
 import connectDB from "./database/db.js";
 import userRoute from "./routes/user.route.js";
@@ -25,6 +26,7 @@ app.use("/api/v1/media", mediaRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRoute);
 app.use("/api/v1/purchase", purchaseRoute);
+app.use("/api/v1/progress", courseProgressRoute);
 
 app.get("/home", (_, res) => {
   res.status(200).json({
