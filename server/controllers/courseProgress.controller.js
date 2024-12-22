@@ -15,7 +15,7 @@ export const getCOurseProgress = async (req, res) => {
 
     const courseDetails = await Course.findById(courseId).populate("lectures");
 
-    if (!courseProgress) {
+    if (!courseDetails) {
       return res.status(404).json({
         message: "Course not found",
       });
@@ -62,9 +62,9 @@ export const updateCourseProgress = async (req, res) => {
     });
 
     if (!courseProgress) {
-      courseProgress = new CourseProgress.create({
+      courseProgress = new CourseProgress({
         userId,
-        createId,
+        courseId,
         completed: false,
         lecturesProgress: [],
       });
@@ -100,6 +100,7 @@ export const updateCourseProgress = async (req, res) => {
       message: "Course progress updated",
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       message: "Failed to update course progress",
     });

@@ -4,7 +4,7 @@ import {
   markAsCompleted,
   markAsUncompleted,
   updateCourseProgress,
-} from "../controllers/courseProgress.controller";
+} from "../controllers/courseProgress.controller.js";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 const router = express.Router();
 
