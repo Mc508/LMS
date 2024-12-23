@@ -1,13 +1,16 @@
-import { CheckCircle2, CirclePlay } from "lucide-react";
+import { CheckCircle, CheckCircle2, CirclePlay } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardTitle } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import {
   useGetCourseProgressQuery,
+  useMarkAsCompleteCourseMutation,
+  useMarkAsInCompleteCourseMutation,
   useUpdateLectureProgressMutation,
 } from "../../features/api/courseProgressApi";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const CourseProgress = () => {
   const params = useParams();
@@ -18,6 +21,12 @@ const CourseProgress = () => {
 
   const [updateLectureProgress] = useUpdateLectureProgressMutation();
 
+  const [completeCourse, { data: completeData, isSuccess: isCompleteSuccess }] =
+    useMarkAsCompleteCourseMutation();
+  const [
+    inCompleteCourse,
+    { data: inCompleteData, isSuccess: isInCompleteSuccess },
+  ] = useMarkAsInCompleteCourseMutation();
   const handleLectureProgress = async (lectureId) => {
     await updateLectureProgress({ courseId, lectureId });
     refetch();
@@ -42,12 +51,38 @@ const CourseProgress = () => {
   const handleSelectLecture = (lecture) => {
     setCurrentLecture(lecture);
   };
-
+  const handleCompleteCourse = async () => {
+    await completeCourse(courseId);
+  };
+  const handleInCompleteCourse = async () => {
+    await inCompleteCourse(courseId);
+  };
+  useEffect(() => {
+    if (isCompleteSuccess) {
+      refetch();
+      toast.success(completeData.message);
+    }
+    if (isInCompleteSuccess) {
+      refetch();
+      toast.success(inCompleteData.message);
+    }
+  }, [completedSuccess, inCompleteSuccess]);
   return (
     <div className="max-w-7xl mx-auto p-4 mt-20">
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">{courseTitle}</h1>
-        <Button>Completed</Button>
+        <Button
+          variant={completed ? "default" : "outline"}
+          onClick={completed ? handleCompleteCourse : handleInCompleteCourse}
+        >
+          {completed ? (
+            <div className="flex items-center">
+              <CheckCircle className="h-4 w-4 mr-2" /> <span>completed</span>
+            </div>
+          ) : (
+            "Mark as Complete"
+          )}
+        </Button>
         {/* {video section} */}
       </div>
       <div className="flex flex-col md:flex-row gap-6">
