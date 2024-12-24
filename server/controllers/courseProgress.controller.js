@@ -71,12 +71,12 @@ export const updateCourseProgress = async (req, res) => {
     }
 
     const lectureProgressIndex = courseProgress.lecturesProgress.findIndex(
-      (lecture) => lecture.lecturedid === lectureId
+      (lecture) => lecture.lectureId === lectureId
     );
 
     if (lectureProgressIndex === -1) {
       courseProgress.lecturesProgress.push({
-        lecturedid: lectureId,
+        lectureId: lectureId,
         viewed: true,
       });
     } else {

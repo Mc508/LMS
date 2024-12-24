@@ -19,44 +19,19 @@ const CourseProgress = () => {
   const { data, isLoading, isError, refetch } =
     useGetCourseProgressQuery(courseId);
 
+  console.log(data);
   const [updateLectureProgress] = useUpdateLectureProgressMutation();
 
-  const [completeCourse, { data: completeData, isSuccess: isCompleteSuccess }] =
-    useMarkAsCompleteCourseMutation();
   const [
-    inCompleteCourse,
+    markAsCompleteCourse,
+    { data: completeData, isSuccess: isCompleteSuccess },
+  ] = useMarkAsCompleteCourseMutation();
+
+  const [
+    markAsIncompleteCourse,
     { data: inCompleteData, isSuccess: isInCompleteSuccess },
   ] = useMarkAsInCompleteCourseMutation();
-  const handleLectureProgress = async (lectureId) => {
-    await updateLectureProgress({ courseId, lectureId });
-    refetch();
-  };
-  const [currentLecture, setCurrentLecture] = useState(null);
 
-  if (isLoading) {
-    return <p>Loading</p>;
-  }
-  if (isError) {
-    return <p>Failed </p>;
-  }
-  const { courseDetails, completed, progress } = data.data;
-  const { courseTitle } = courseDetails;
-  const initialLecture =
-    currentLecture || (courseDetails.lectures && courseDetails.lectures[0]);
-
-  const isLectureCompleted = (lectureId) => {
-    return progress.some((prog) => prog.lectureId === lectureId && prog.viewed);
-  };
-
-  const handleSelectLecture = (lecture) => {
-    setCurrentLecture(lecture);
-  };
-  const handleCompleteCourse = async () => {
-    await completeCourse(courseId);
-  };
-  const handleInCompleteCourse = async () => {
-    await inCompleteCourse(courseId);
-  };
   useEffect(() => {
     if (isCompleteSuccess) {
       refetch();
@@ -66,18 +41,52 @@ const CourseProgress = () => {
       refetch();
       toast.success(inCompleteData.message);
     }
-  }, [completedSuccess, inCompleteSuccess]);
+  }, [isCompleteSuccess, isInCompleteSuccess]);
+
+  const [currentLecture, setCurrentLecture] = useState(null);
+  if (isLoading) {
+    return <p>Loading</p>;
+  }
+  if (isError) {
+    return <p>Failed </p>;
+  }
+  const { courseDetails, progress, completed } = data.data;
+  // console.log(courseDetails);
+  const { courseTitle } = courseDetails;
+  const initialLecture =
+    currentLecture || (courseDetails.lectures && courseDetails.lectures[0]);
+
+  const isLectureCompleted = (lectureId) => {
+    return progress.some((prog) => prog.lectureId === lectureId && prog.viewed);
+  };
+
+  const handleLectureProgress = async (lectureId) => {
+    await updateLectureProgress({ courseId, lectureId });
+    refetch();
+  };
+
+  const handleSelectLecture = (lecture) => {
+    setCurrentLecture(lecture);
+    handleLectureProgress(lecture._id);
+  };
+  const handleCompleteCourse = async () => {
+    await markAsCompleteCourse(courseId);
+  };
+  const handleInCompleteCourse = async () => {
+    await markAsIncompleteCourse(courseId);
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-4 mt-20">
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">{courseTitle}</h1>
         <Button
-          variant={completed ? "default" : "outline"}
-          onClick={completed ? handleCompleteCourse : handleInCompleteCourse}
+          variant={completed ? "outline" : "default"}
+          onClick={completed ? handleInCompleteCourse : handleCompleteCourse}
         >
           {completed ? (
             <div className="flex items-center">
-              <CheckCircle className="h-4 w-4 mr-2" /> <span>completed</span>
+              <CheckCircle className="h-4 w-4 mr-2" /> <span>Completed</span>
             </div>
           ) : (
             "Mark as Complete"
@@ -120,27 +129,27 @@ const CourseProgress = () => {
                 onClick={() => handleSelectLecture(lecture)}
                 className={`mb-4 hover:cursor-pointer transition transform  ${
                   lecture._id === currentLecture?._id
-                    ? "bg-gray-300"
-                    : "dark:bg-gray-500"
+                    ? "bg-gray-300 dark:bg-gray-500"
+                    : ""
                 }`}
               >
-                <CardContent className="flex items-center p-4">
-                  <div className="flex items-center">
+                <CardContent className="flex items-center justify-between p-4">
+                  <div className="flex items-center ">
                     {isLectureCompleted(lecture._id) ? (
                       <CheckCircle2 size={24} className="text-green-500 mr-2" />
                     ) : (
                       <CirclePlay size={24} className="text-gray-500 mr-2" />
                     )}
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg font-medium">
-                      {lecture.lectureTitle}
-                    </CardTitle>
+                    <div>
+                      <CardTitle className="text-lg font-medium">
+                        {lecture.lectureTitle}
+                      </CardTitle>
+                    </div>
                   </div>
                   {isLectureCompleted(lecture._id) && (
                     <Badge
                       variant={"outline"}
-                      className={completed ? "bg-green-500" : ""}
+                      className="bg-green-200 text-green-600"
                     >
                       Completed
                     </Badge>

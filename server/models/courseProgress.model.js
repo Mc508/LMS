@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const lectureProgressSchema = new Schema({
-  lecturedid: { type: String },
+  lectureId: { type: String },
   viewed: { type: Boolean },
 });
 
