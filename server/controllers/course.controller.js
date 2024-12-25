@@ -35,6 +35,49 @@ export const createCourse = async (req, res) => {
   }
 };
 
+export const searchCourse = async (req, res) => {
+  try {
+    const { query = "", categories = [], sortByPrice = "" } = req.query;
+
+    //create search query
+
+    const searchCriteria = {
+      isPublished: true,
+      $or: [
+        { courseTitle: { $regex: query, $options: "i" } },
+        { subTitle: { $regex: query, $options: "i" } },
+        { description: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
+      ],
+    };
+
+    if (categories.length > 0) {
+      searchCriteria.category = { $in: categories };
+    }
+
+    //define sorting order
+
+    const sortOptions = {};
+    if (sortByPrice === "low") {
+      sortOptions.coursePrice = 1;
+    } else if (sortByPrice === "high") {
+      sortOptions.coursePrice = -1;
+    }
+
+    const courses = await Course.find(searchCriteria)
+      .populate({ path: "creator", select: "name photoUrl" })
+      .sort(sortOptions);
+
+    res.status(200).json({
+      courses: courses || [],
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Failde to get course",
+    });
+  }
+};
 export const getCreatorCourses = async (req, res) => {
   try {
     const userId = req.id;

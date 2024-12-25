@@ -6,7 +6,7 @@ const Courses = () => {
   // const isLoading = false;
 
   const { data, isLoading, isError } = useGetPublishedCoursesQuery();
-  console.log(data);
+  // console.log(data);
   if (isError) return <h1>Something went wrong</h1>;
   if (isLoading) return <LoadingSpinner />;
   return (

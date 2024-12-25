@@ -13,6 +13,7 @@ import {
   getLectureById,
   getPublishedCourses,
   removeLecture,
+  searchCourse,
   togglePublishCourse,
 } from "../controllers/course.controller.js";
 
@@ -20,6 +21,7 @@ const router = express.Router();
 
 router.route("/").post(isAuthenticated, createCourse);
 router.route("/published-courses").get(isAuthenticated, getPublishedCourses);
+router.route("/search").get(isAuthenticated, searchCourse);
 router.route("/").get(isAuthenticated, getCreatorCourses);
 router
   .route("/:courseId")
