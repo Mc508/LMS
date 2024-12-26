@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { Course } from "../models/course.model.js";
 import { PurchaseCourse } from "../models/purchaseCourse.model.js";
 import { Lecture } from "../models/lecture.model.js";
+import { User } from "../models/user.model.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -52,7 +53,7 @@ export const createCheckoutSession = async (req, res) => {
 
     // console.log(session.url);
     if (!session.url) {
-      return res.status(500).json({
+      return res.status(400).json({
         message: "Failed to create checkout session",
       });
     }
@@ -183,10 +184,10 @@ export const getCourseDetailPurchaseStatus = async (req, res) => {
 
 export const getAllPurchasedCourses = async (req, res) => {
   try {
-    const userId = req.id;
+    // const userId = req.id;
     const purchasedCourses = await PurchaseCourse.find({
       status: "completed",
-      userId,
+      // userId,
     }).populate({
       path: "courseId",
     });

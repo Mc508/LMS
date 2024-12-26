@@ -21,7 +21,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Darkmode } from "../Darkmode";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useLogoutUserMutation } from "../features/api/authApi";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -48,8 +48,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto hidden justify-between items-center gap-10 md:flex h-full">
         <div className="flex items-center gap-2">
           <School size={"30"} />
-          <Link to="/" />
-          <h1 className="hidden md:block font-extrabold text-2xl">Learning</h1>
+          <Link to="/">
+            <h1 className="hidden md:block font-extrabold text-2xl">
+              Learning
+            </h1>
+          </Link>
         </div>
         {/* USer icon and dark mode */}
         <div className="flex item-center gap-8">
@@ -78,10 +81,14 @@ const Navbar = () => {
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link to="/admin/dashboard">Dashboard</Link>
-                </DropdownMenuItem>
+                {user.role === "instructor" && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Link to="/admin/dashboard">Dashboard</Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -98,15 +105,15 @@ const Navbar = () => {
       {/* Mobile */}
       <div className="flex md:hidden items-center justify-between px-4 h-full">
         <h1 className="font-extrabold text-2xl">Learning</h1>
-        <MobileNavbar />
+        <MobileNavbar user={user} />
       </div>
     </div>
   );
 };
 export default Navbar;
 
-const MobileNavbar = () => {
-  const role = "instructor";
+const MobileNavbar = ({ user }) => {
+  const navigate = useNavigate();
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -121,20 +128,25 @@ const MobileNavbar = () => {
       <SheetContent className="flex flex-col">
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
           <SheetTitle className="font-extrabold  text-2xl">
-            Elearning
+            <Link to="/">Elearning</Link>
           </SheetTitle>
           <Darkmode />
         </SheetHeader>
         <Separator className="mr-2" />
         <nav className="flex flex-col space-y-2 ">
-          <span>My Learning</span>
-          <span>Edit Profile</span>
-          <p>Logout</p>
+          <Link to="/my-learning">My Learning</Link>
+          <Link to="/profile">Edit Profile</Link>
+          <Link to="/">Logout</Link>
         </nav>
-        {role === "instructor" && (
+        {user.role === "instructor" && (
           <SheetFooter>
             <SheetClose asChild>
-              <Button type="submit">Dashboard</Button>
+              <Button
+                type="submit"
+                onClick={() => navigate("/admin/dashboard")}
+              >
+                Dashboard
+              </Button>
             </SheetClose>
           </SheetFooter>
         )}

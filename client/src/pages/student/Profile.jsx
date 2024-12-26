@@ -45,6 +45,7 @@ const Profile = () => {
       isSuccess,
     },
   ] = useUpdateUserMutation();
+  console.log(data);
 
   const updateUserHandler = async () => {
     const formData = new FormData();
@@ -52,9 +53,7 @@ const Profile = () => {
     formData.append("profilePhoto", profilePhoto);
     await updateUser(formData);
   };
-  useEffect(() => {
-    refetch();
-  });
+
   useEffect(() => {
     if (isSuccess) {
       refetch();

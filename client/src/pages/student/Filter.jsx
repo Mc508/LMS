@@ -23,7 +23,7 @@ const Filter = ({ handleFilterChange }) => {
         ? prevCategories.filter((id) => id !== categoryId)
         : [...prevCategories, categoryId];
 
-      handleFilterChange(selectedCategories, selectedValue);
+      handleFilterChange(newCategories, sortByPrice);
       return newCategories;
     });
   };
@@ -32,6 +32,7 @@ const Filter = ({ handleFilterChange }) => {
     setSortByPrice(selectedValue);
     handleFilterChange(selectedCategories, selectedValue);
   };
+
   return (
     <div className="w-full md:w-[20%]">
       <div className="flex items-center justify-between">

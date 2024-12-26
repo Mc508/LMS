@@ -20,7 +20,7 @@ import {
 const router = express.Router();
 
 router.route("/").post(isAuthenticated, createCourse);
-router.route("/published-courses").get(isAuthenticated, getPublishedCourses);
+router.route("/published-courses").get(getPublishedCourses);
 router.route("/search").get(isAuthenticated, searchCourse);
 router.route("/").get(isAuthenticated, getCreatorCourses);
 router

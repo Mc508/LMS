@@ -26,7 +26,7 @@ const CourseDetails = () => {
   if (isError) {
     return <h1>Error</h1>;
   }
-
+  console.log(data);
   const { course, purchased } = data;
 
   const handleContinueCourse = () => {
