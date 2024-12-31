@@ -138,7 +138,7 @@ const MobileNavbar = ({ user }) => {
           <Link to="/profile">Edit Profile</Link>
           <Link to="/">Logout</Link>
         </nav>
-        {user.role === "instructor" && (
+        {user?.role === "instructor" && (
           <SheetFooter>
             <SheetClose asChild>
               <Button
